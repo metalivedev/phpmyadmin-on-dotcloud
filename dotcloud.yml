@@ -1,5 +1,6 @@
 pma:
     type: php
+    postbuild: postbuild
 db:
     type: mysql
 sessions:
