@@ -21,6 +21,13 @@ function load_dotcloud_env()
     return (json_decode(file_get_contents($environment_file), true));
 }
 
+function get_pma_server($dotcloud_env)
+{
+    # Return the first server name that includes the PMA service name.
+    # You'll need to update this if you call your phpMyAdmin service something besides pma.
+    return $dotcloud_env{'DOTCLOUD_PMA_HTTP_HOST'};
+}
+
 function get_mysql_servers($dotcloud_env)
 {
     $servers = array();
@@ -37,7 +44,8 @@ function get_mysql_servers($dotcloud_env)
     return ($servers);
 }
 
-$servers = get_mysql_servers(load_dotcloud_env());
+$dcenv = load_dotcloud_env();
+$servers = get_mysql_servers($dcenv);
 
 /*
  * Remove the warning about Suhosin
@@ -100,5 +108,9 @@ unset($servers);
  */
 $cfg['UploadDir'] = '';
 $cfg['SaveDir'] = '';
+
+# With ForceSSL on, PMA seems to detect port 80 on dotCloud and adds that to the URL. 
+# Since we should not specify port, let's explicitly specify the absolute URI.
+$cfg['PmaAbsoluteUri'] = "https://" . get_pma_server($dcenv);
 
 ?>
