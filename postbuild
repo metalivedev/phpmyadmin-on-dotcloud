@@ -14,6 +14,7 @@ msg() {
 }
 
 # Emulate tar's --strip-components=1
+# from http://superuser.com/questions/518347/equivalent-to-tars-strip-components-1-in-unzip
 unzipstrip() {
     local zip=$1
     local dest=${2:-.}
